@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "postgresql"  
+    queries: "pkg/common/db/queries/"  
+    schema: "pkg/common/db/schema/" 
+    gen:
+      go:
+        package: "db_sqlc"  
+        sql_package: "pgx/v5" 
+        out: "pkg/common/db/sqlc"
+        emit_json_tags: true

@@ -1,0 +1,140 @@
+# @/graph/typeDefs/users.gql
+scalar DateTime
+
+enum UserRole {
+  JOBSEEKER
+  ADMIN
+  RECRUITER
+}
+
+type User {
+  id: ID!
+  fullName: String!
+  email: String!
+  role: UserRole!
+  avatarUrl: String!
+  createdAt:  DateTime!
+}
+
+
+
+type Query {
+  users(filter: UserFilter): [User!]!
+  user(id: ID!): User
+}
+
+
+
+input UserFilter {
+  email: String
+  role: UserRole
+}
+
+input CreateUserInput {
+  fullName: String!
+  email: String!
+  password: String! # Hashed password will be stored
+  role: UserRole!   
+  avatarUrl: String
+}
+
+input UpdateUserInput {
+  fullName: String
+  email: String
+  password: String  # Optional for password updates
+  role: UserRole
+  avatarUrl: String
+}
+
+type ProfileSkill {
+  id: ID!  # Primary key for the profile_skills table
+  profile: Profile!  # Reference to the associated Profile
+  skill: Skill!  # Reference to the associated Skill
+}
+
+
+type Profile {
+  id: ID!
+  userId: ID! # Foreign key referencing User.id
+  bio: String
+  company: String
+  jobRole: String!
+  description: String
+  user: User! # Reference to the associated User
+  skills: [Skill!]!
+}
+
+type Skill {
+  id: ID!
+  name: String!
+}
+
+type Career {
+  id: ID!
+  userId: ID! # Foreign key referencing User.id
+  title: String!
+  company: String
+  description: String
+  skill: Skill! # Reference to the associated Skill
+  user: User! # Reference to the associated User
+}
+
+
+
+input CreateProfileInput {
+  bio: String
+  company: String
+  jobRole: String!
+  description: String
+  skills: [String!]!
+
+}
+
+input UpdateProfileInput {
+  bio: String
+  company: String
+  jobRole: String
+  description: String
+  skills: [String!]!
+
+}
+
+
+
+input SkillInput {
+  name: String!
+}
+
+
+input CreateCareerInput {
+  title: String!
+  company: String
+  description: String
+  skillId: ID!
+}
+
+input UpdateCareerInput {
+  title: String
+  company: String
+  description: String
+  skillId: ID
+}
+
+
+type Mutation {
+  createUser(user: CreateUserInput!): User!
+  updateUser(id: ID!, user: UpdateUserInput!): User
+  deleteUser(id: ID!): Boolean!
+
+  createProfile(userId: ID!, profileInput: CreateProfileInput!): Profile!
+  updateProfile(id: ID!, profileInput: UpdateProfileInput!): Profile!
+  deleteProfile(id: ID!): Boolean!
+
+  createSkill(name: String!): Skill!
+  updateSkill(id: ID!, name: String!): Skill!
+  deleteSkill(id: ID!): Boolean!
+
+  createCareer(userId: ID!, careerInput: CreateCareerInput!): Career!
+  updateCareer(id: ID!, careerInput: UpdateCareerInput!): Career!
+  deleteCareer(id: ID!): Boolean!
+}
